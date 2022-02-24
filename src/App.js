@@ -9,12 +9,13 @@ import { UserContextProvider } from "./context/UserContext";
 import { ThemeProvider } from "@mui/material";
 import theme from "./assets/theme";
 function App() {
+  const { isLoader } = useUser();
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <UserContextProvider>
           <div className="App">
-            <NavBar />
+          <NavBar />
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />

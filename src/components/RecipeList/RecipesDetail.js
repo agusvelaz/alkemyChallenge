@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import recipeDetailService from "../../services/recipeDetailService";
-import RecipeInfo from './RecipeInfo'
+import RecipeInfo from "./RecipeInfo";
 import {
   Box,
   CardMedia,
   CardContent,
   Typography,
-  Tooltip,
   ListItem,
   ListItemText,
   Card,
+  Button,
+  CardActions,
 } from "@mui/material";
+import useUser from "../../hooks/useUser";
 
 import Loader from "../Loader";
 import { Link } from "react-router-dom";
 
-
 const bigContainer = {
   display: "flex",
   flexDirection: "column",
-  margin:"auto"
-
+  margin: "auto",
 };
 const backToList = {
   margin: "20px auto 10px",
@@ -49,8 +49,6 @@ const cardContent = {
   justifyContent: "space-evenly",
   alignItems: "center",
   margin: "8px",
-  // border:"1px solid #00000029",
-  // borderRadius:"4px"
   h3: {
     fontSize: { xs: "30px", md: "3rem" },
   },
@@ -90,6 +88,7 @@ const ingredients = {
 };
 
 export default function RecipesDetail() {
+  const { addMyMenu } = useUser();
   const [isLoader, setIsLoader] = useState(true);
   const [recipeDetail, setRecipeDetail] = useState([]);
   const { id } = useParams();
@@ -99,7 +98,7 @@ export default function RecipesDetail() {
     recipeDetailService(id)
       .then((res) => {
         setRecipeDetail(res);
-        console.log(res);
+        // console.log(res);
       })
       .catch((err) => {
         console.error(err);
@@ -132,7 +131,7 @@ export default function RecipesDetail() {
                     {recipeDetail.title}
                   </Typography>
                   <Box sx={information}>
-                    <RecipeInfo recipeDetail={recipeDetail}/>
+                    <RecipeInfo recipeDetail={recipeDetail} />
                   </Box>
                   <Box sx={diets}>
                     <ListItem>
@@ -154,14 +153,16 @@ export default function RecipesDetail() {
                       />
                     </ListItem>
                   </Box>
+                  <CardActions>
+                    <Button
+                      variant="contained"
+                      disableElevation
+                      onClick={() => addMyMenu(recipeDetail)}
+                    >
+                      Add My Menu
+                    </Button>
+                  </CardActions>
                 </CardContent>
-                {/* <CardActions>
-        <Button size="small">Add My Menu</Button>
-        <Link to={`/recipeDetail/${recipeDetail.id}`}>
-        <Button size="small">Detail</Button>
-        </Link>
-        
-      </CardActions> */}
               </Card>
             </Box>
             <Card sx={ingredientsContainer}>

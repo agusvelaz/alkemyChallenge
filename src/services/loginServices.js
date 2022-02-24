@@ -14,6 +14,7 @@ export default async function loginServices(valueEmail, valuePassword) {
 
   } catch (err) {
     // console.log(err.response.data.error)
+    // return err.response.data.error
     throw new Error(`${err.response.data.error}`)
    
   }

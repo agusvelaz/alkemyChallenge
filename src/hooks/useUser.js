@@ -1,6 +1,7 @@
 import Context from "../context/UserContext";
 import loginServices from "../services/loginServices";
 import { useContext, useState } from "react";
+import Swal from 'sweetalert2'
 
 export default function useUser() {
   const {
@@ -16,10 +17,12 @@ export default function useUser() {
     avarageTimeMenu,
     setAvarageTimeMenu,
   } = useContext(Context);
+  const [isLoader, setIsLoader] = useState(false);
   const [error, setError] = useState(null);
   const lS = window.localStorage;
   //login
   const login = (valueEmail, valuePassword) => {
+    setIsLoader(true);
     loginServices(valueEmail, valuePassword)
       .then((res) => {
         lS.setItem("tokenUser", res);
@@ -32,8 +35,11 @@ export default function useUser() {
         setError(err);
         setTimeout(() => {
           setError(null);
-        }, 5000);
-      });
+        }, 3000);
+      })
+      .finally(() => {
+        setIsLoader(false);
+      });;
   };
   const logout = () => {
     lS.removeItem("tokenUser");
@@ -42,39 +48,52 @@ export default function useUser() {
 
   //menu
   const addMyMenu = (recipe) => {
-    const isInMenuAlert = () => {
-      alert(`"${recipe.title}" ya se encuentra en tu menu`);
-    };
-    const lengthMenuAlert = () => {
-      alert(`Puedes agregar hasta 4 recetas maximo.`);
-    };
+    //alerts
+    const warningAlert = (msj) => {
+      Swal.fire({
+        icon: 'warning',
+        // title: 'Oops...',
+        html: `${msj}`,
+        confirmButtonColor: '#000'
+      })
+    }; 
+    const successAddAlert = () =>{
+      Swal.fire({
+        icon: 'success',
+        // title: '',
+        html: `You added <b>"${recipe.title}"</b> to your menu`,
+        confirmButtonColor: '#000'
+      })
+    }
+
+    //validate
     const isInMenu = menuUser.find((i) => i.id === recipe.id);
     if (isInMenu != null) {
-      isInMenuAlert();
+      warningAlert(`<b>"${recipe.title}"</b> it's already on your menu.`);
     } else if (menuUser.length >= 4) {
-      lengthMenuAlert();
+      warningAlert(`You can only add 4 recipes maximum`);
     } else {
       if (recipe.vegan) {
         if (recipesVegan < 2) {
           setRecipesVegan(recipesVegan + 1);
           setMenuUser([...menuUser, recipe]);
-          alert(`Agregaste "${recipe.title}"`);
+          successAddAlert()
         } else {
-          alert("Ya tienes 2 recestas veganas");
+          warningAlert("You already have 2 vegan recipes");
         }
       } else {
         if (recipesNoVegan < 2) {
           setRecipesNoVegan(recipesNoVegan + 1);
           setMenuUser([...menuUser, recipe]);
-          alert(`Agregaste "${recipe.title}"`);
+          successAddAlert()
         } else {
-          alert("Ya tienes 2 recestas no veganas");
+          warningAlert("You already have 2 non-vegan recipes");
         }
       }
     }
   };
   const deleteRecipe = (recipe) =>{
-    console.log(recipe.id)
+    // console.log(recipe.id)
     if (recipe.vegan) {
       setRecipesVegan(recipesVegan - 1)
     } else{
@@ -110,6 +129,7 @@ export default function useUser() {
     login,
     logout,
     error,
+    isLoader,
     menuUser,
     recipesVegan,
     recipesNoVegan,

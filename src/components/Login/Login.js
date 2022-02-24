@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import useUser from "../../hooks/useUser";
-import theme from "../../assets/theme";
 import imgLogin from "../../assets/login.jpg";
-
-import Box from "@mui/material/Box";
-import { Typography } from "@mui/material";
+import { Typography, Box, Button, IconButton, Tooltip } from "@mui/material";
+import EmailIcon from "@mui/icons-material/Email";
+import LockIcon from "@mui/icons-material/Lock";
+import Swal from "sweetalert2";
 
 const backgroundLogin = {
   display: "flex",
@@ -24,12 +24,41 @@ const loginContainer = {
   backgroundColor: "white",
   margin: "auto",
   width: "500px",
-  height: "96%",
+  height: "99%",
+  "& small":{
+    backgroundColor:"error.main",
+    width: 220,
+    height:20,
+    color:"white"   
+  },
+};
+
+const paperForm = {
+  margin: 1,
+  border: "1px solid #80808059",
+  display: "flex",
+  "&:focus-within": {
+    border: 0,
+    border: "1px solid black",
+  },
+  "& form": {
+    display: "flex",
+    alignItems: "center",
+    width: 300
+  },
+  "& input": {
+    width: "100%",
+
+    border: 0,
+    flex: 1,
+    outline: "none",
+  },
 };
 
 export default function Login() {
-  const { login, isLogged, error } = useUser();
+  const { login, isLogged, error, isLoader } = useUser();
   const navigateTo = useNavigate();
+
   useEffect(() => {
     if (isLogged) {
       setTimeout(() => {
@@ -37,7 +66,14 @@ export default function Login() {
       }, 1000);
     }
   }, [isLogged]);
-  console.log(isLogged);
+
+  const alertLogin = () => {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: `${error}`,
+    });
+  };
   const validateInputs = (values) => {
     const errors = {};
     if (!values.email) {
@@ -50,7 +86,7 @@ export default function Login() {
     if (!values.password) {
       errors.password = "Required password";
     }
-    // console.log(errors);
+    console.error(errors);
     return errors;
   };
   const handleSubmit = (values) => {
@@ -65,43 +101,74 @@ export default function Login() {
     <>
       <Box sx={backgroundLogin}>
         <Box sx={loginContainer}>
-          <h1>Bienvenid@ a MPH</h1>
-          <Typography>Inicie sesion para continuar 🚀</Typography>
+          <Box m={2}>
+            <Typography variant="h3" m={2}>
+              Welcome to MPH{" "}
+            </Typography>
+            <Typography variant="h5">Login to continue 🚀</Typography>
+          </Box>
           <Box>
             <Formik
               initialValues={initialValuesInput}
               validate={validateInputs}
               onSubmit={handleSubmit}
             >
-              {({ errors, isSubmitting }) => (
+              {({ errors }) => (
                 <Form>
-                  {/* {console.log(isSubmitting)} */}
                   <Box
                     display="flex"
                     alignItems="center"
                     flexDirection="column"
                   >
-                    <label>Email</label>
-                    <Field name="email" type="email" onBlur={null} />
-                    <ErrorMessage
-                      name="email"
-                      component={() => <small>{errors.email}</small>}
-                    />
-                    <label>Password</label>
-                    <Field name="password" type="password" onBlur={null} />
+                    <Box sx={paperForm}>
+                      <IconButton
+                        disabled
+                        sx={{ p: "10px" }}
+                        aria-label="email"
+                      >
+                        <EmailIcon />
+                      </IconButton>
+                      <Field
+                        placeholder="Email"
+                        name="email"
+                        type="email"
+                        onBlur={null}
+                      />
+                    </Box>
+
+                    
+
+                    <Box sx={paperForm}>
+                      <IconButton
+                        disabled
+                        sx={{ p: "10px" }}
+                        aria-label="email"
+                      >
+                        <LockIcon />
+                      </IconButton>
+                      <Field
+                        id="password"
+                        placeholder="Password"
+                        name="password"
+                        type="password"
+                        onBlur={null}
+                      />
+                    </Box>
+
                     <ErrorMessage
                       name="password"
                       component={() => <small>{errors.password}</small>}
                     />
-                    <button
-                      // disabled={isSubmitting}
+
+                    <Button
+                      disabled={isLoader}
                       type="submit"
+                      variant="contained"
+                      sx={{margin:2}}
                     >
-                      Inicial
-                    </button>
-                    {error && (
-                      <ErrorMessage component={() => <Typography>{`${error}`}</Typography>} />
-                    )}
+                      Login
+                    </Button>
+                    {error && alertLogin()}
                   </Box>
                 </Form>
               )}
@@ -113,7 +180,8 @@ export default function Login() {
   );
 }
 
-{/* <Paper sx={paperForm}>
+{
+  /* <Paper sx={paperForm}>
   <Form>
     <Box>
       <IconButton disabled sx={{ p: "10px" }} aria-label="search">
@@ -132,4 +200,5 @@ export default function Login() {
       </Button>
     </Box>
   </Form>
-</Paper>; */}
+</Paper>; */
+}

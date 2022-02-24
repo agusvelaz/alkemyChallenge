@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Box, Typography } from "@mui/material";
+import NavBar from "./NavBar/NavBar"
 import Menu from "./Menu/Menu";
 import RecipeListContainer from "./RecipeList/RecipeListContainer";
 
@@ -25,6 +26,7 @@ export default function Home() {
 
   return (
     <>
+
       <Box>
         <Box sx={menuContainer}>
           {menuUser.length != 0 ? (

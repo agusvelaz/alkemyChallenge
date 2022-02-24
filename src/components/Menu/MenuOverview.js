@@ -35,9 +35,9 @@ export default function MenuOverview() {
     recipesNoVegan,
     recipesVegan,
   } = useUser();
-  console.log(menuUser);
-  console.log("Vegans: " + recipesVegan);
-  console.log("No vegans: " + recipesNoVegan);
+  // console.log(menuUser);
+  // console.log("Vegans: " + recipesVegan);
+  // console.log("No vegans: " + recipesNoVegan);
 
   return (
     <Box sx={overviewContainer}>

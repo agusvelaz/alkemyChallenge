@@ -1,14 +1,14 @@
 import {
   AppBar,
   Toolbar,
-  Typography,
   Button,
   IconButton,
   Box,
   Container,
   Paper,
-  InputBase,
   Divider,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
@@ -27,7 +27,7 @@ const paperForm = {
     p: "2px 4px",
     display: "flex",
     alignItems: "center",
-    width: {xs:300, sm:400}, 
+    width: { xs: 300, sm: 400 },
   },
   "& input": {
     color: "black",
@@ -43,15 +43,15 @@ const paperForm = {
 };
 
 export default function SearchBar(props) {
-// console.log(props)
- 
+  // console.log(props)
+
   // SEARCH RESULT
   const search = (query) => {
-    props.setIsLoader(true)
+    props.setIsLoader(true);
     recipeSearchServices(query)
       .then((res) => {
-        props.setFoundRecipes(res)
-        console.log(res);
+        props.setFoundRecipes(res);
+        // console.log(res);
       })
       .catch((err) => {
         console.error(err);
@@ -64,14 +64,14 @@ export default function SearchBar(props) {
   // VALIDATE INPUTS
   const validateInputs = (values) => {
     const errors = {};
-    if (values.search.length < 2) {
+    if (values.search.length <= 2) {
       errors.search = "You must enter more than 2 characters in the search";
     }
-    console.log(errors);
+    console.error(errors.search);
     return errors;
   };
   const handleSubmit = (values) => {
-    console.log(values);
+    // console.log(values);
     search(values.search);
   };
   const initialValuesInput = {
@@ -79,8 +79,8 @@ export default function SearchBar(props) {
   };
   return (
     <AppBar position="static">
-      <Container sx={{padding:"0"}} maxWidth="xl" >
-        <Toolbar sx={{padding:"0"}}>
+      <Container sx={{ padding: "0" }} maxWidth="xl">
+        <Toolbar sx={{ padding: "0" }}>
           <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
             <Formik
               initialValues={initialValuesInput}
@@ -88,6 +88,7 @@ export default function SearchBar(props) {
               onSubmit={handleSubmit}
             >
               {({ errors }) => (
+              
                 <Box sx={formContainer}>
                   <Paper sx={paperForm}>
                     <Form>
@@ -103,7 +104,7 @@ export default function SearchBar(props) {
                         id="search"
                         placeholder="Search Recipes"
                         type="text"
-                        //   onBlur={null}
+                        onBlur={null}
                       />
                       <Divider
                         sx={{ height: 28, m: 0.5 }}
@@ -115,11 +116,22 @@ export default function SearchBar(props) {
                       </Button>
                     </Form>
                   </Paper>
-                  {/* HACER SWEET ALERT PARA ERRORES Y QUE SOLO TIRE ERROR CUANDO ENVIAMOS FORMULARIO Y NO SIEMPRE QUE SALIMOS DEL INPUT */}
-                  {/* <ErrorMessage
-                name="search"
-                component={() => <small>{errors.search}</small>}
-              /> */}
+                  {errors.search && (
+                    <Snackbar
+                      open
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "center",
+                      }}
+                      
+                    >
+                      <Alert severity="warning" sx={{ width: "100%" }}>
+                        {errors.search}
+                      </Alert>
+                      
+                  
+                    </Snackbar>
+                  )}
                 </Box>
               )}
             </Formik>
