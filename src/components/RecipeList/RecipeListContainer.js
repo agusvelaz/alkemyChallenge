@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import RecipeList from "./RecipeList";
-import SearchBar from "./SearchBar";
 import { Box } from "@mui/material";
 import Loader from "../Loader";
+import RecipeList from "./RecipeList";
+import SearchBar from "./SearchBar";
 import recipeRandomServices from '../../services/recipeRandomServices'
+
 
 const recipeListContainer ={
   display:"flex",

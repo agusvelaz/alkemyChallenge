@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import recipeDetailService from "../../services/recipeDetailService";
 import RecipeInfo from "./RecipeInfo";
+import useUser from "../../hooks/useUser";
+import Loader from "../Loader";
+import { Link } from "react-router-dom";
 import {
   Box,
   CardMedia,
@@ -13,10 +16,7 @@ import {
   Button,
   CardActions,
 } from "@mui/material";
-import useUser from "../../hooks/useUser";
 
-import Loader from "../Loader";
-import { Link } from "react-router-dom";
 
 const bigContainer = {
   display: "flex",
